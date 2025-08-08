@@ -3,7 +3,7 @@ use anchor_spl::token_interface::{Mint, TokenAccount};
 use spl_tlv_account_resolution::{
     account::ExtraAccountMeta, seeds::Seed, state::ExtraAccountMetaList,
 };
-use spl_transfer_hook_interface::instruction::ExecuteInstruction;
+use spl_transfer_hook_interface::instruction::{ExecuteInstruction, TransferHookInstruction};
 
 declare_id!("8YpmSCdxjdznYuQtSUpeerjb53iDq4uWW34T9gLF2t2p");
 
@@ -55,6 +55,21 @@ pub mod slipless_hook {
         );
         msg!("Token badge is valid, transfer allowed");
         Ok(())
+    }
+
+    pub fn fallback<'a>(
+        program_id: &Pubkey,
+        accounts: &'a [AccountInfo<'a>],
+        data: &[u8],
+    ) -> Result<()> {
+        let instruction = TransferHookInstruction::unpack(data)?;
+        match instruction {
+            TransferHookInstruction::Execute { amount } => {
+                let amount_bytes = amount.to_le_bytes();
+                __private::__global::transfer_hook(program_id, accounts, &amount_bytes)
+            }
+            _ => return Err(ProgramError::InvalidInstructionData.into()),
+        }
     }
 }
 
