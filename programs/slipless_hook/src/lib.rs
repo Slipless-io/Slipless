@@ -5,7 +5,7 @@ use spl_tlv_account_resolution::{
 };
 use spl_transfer_hook_interface::instruction::{ExecuteInstruction, TransferHookInstruction};
 
-declare_id!("8YpmSCdxjdznYuQtSUpeerjb53iDq4uWW34T9gLF2t2p");
+declare_id!("3kfz6weiLWjpBzrPmf8sY7CaA8cNuikGkyzPTM7JYGGo");
 
 #[program]
 pub mod slipless_hook {
